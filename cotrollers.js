@@ -21,7 +21,7 @@ const putGoals = asyncHandler(async (req, res) => {
   const goal = await Goal.findById(req.params.id);
   if (!goal) {
     res.status(400);
-    throw new Error("goal does,nt exist");
+    throw new Error("goal does not exist");
   }
   const updatedGoal = await Goal.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -30,7 +30,15 @@ const putGoals = asyncHandler(async (req, res) => {
 });
 
 const deleteGoals = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: `delete goals ${req.params.id}` });
+  const goal = await Goal.findById(req.params.id);
+  if (!goal) {
+    res.status(400);
+    throw new Error("goal does not exist");
+  }
+
+  await goal.remove(req.params.id);
+
+  res.status(200).json({ id: req.params.id });
 });
 
 module.exports = { getGoals, postGoals, putGoals, deleteGoals };
